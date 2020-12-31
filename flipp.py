@@ -51,6 +51,7 @@ with open(filename,'r',encoding='utf-8') as f:
     contents = f.read()
     contents = re.sub(r'CELL:([0-9]{8}|\+225.*)',flipp,contents)
 
+os.mkdir('output')
 with open('output/contacts_new.vcf','w',encoding='utf-8') as of:
     of.write(contents)
     
