@@ -1,6 +1,7 @@
 # According to the incoming changes next year, this program will attempt to automate
 # the tedious task of adding prefixes
 import re
+import os
 # This deals with the mobile prefixes
 moovmobile = ['01', '02', '03', '40','41', '42', '43', '50', '51', '52', '53', '70', '71', '72', '73']
 mtnmobile = ['04', '05', '06', '44', '45', '46', '54', '55', '56' , '64', '65', '66', '74', '75','76', '84', '85', '86', '94', '95', '96']
@@ -35,15 +36,22 @@ def flipp(matchobj):
             number = "21" + number
     number = ' '.join(a+b for a,b in zip(number[::2], number[1::2]))
     number = "+225 " + number
+    number = "CELL:"+ number
     print(number)
     return number
 
+vcf_files = [f for f in os.listdir('.') if f.endswith('.vcf')]
+if len(vcf_files) != 1:
+    raise ValueError('Vous ne devez avoir qu\'un seul fichier VCF dans le dossier !')
+
+filename = vcf_files[0]
+
 # The VCF file usually can be exported from all phones
-with open('contacts.vcf','r',encoding='utf-8') as f:
+with open(filename,'r',encoding='utf-8') as f:
     contents = f.read()
     contents = re.sub(r'CELL:([0-9]{8}|\+225.*)',flipp,contents)
 
-with open('contacts_output.vcf','w',encoding='utf-8') as of:
+with open('output/contacts_new.vcf','w',encoding='utf-8') as of:
     of.write(contents)
     
 
