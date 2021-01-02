@@ -9,11 +9,10 @@ orangemobile = ['07', '08', '09', '47', '48', '49', '57', '58', '59', '67', '68'
 moovfixe = ['208', '218', '228', '238']
 mtnfixe = ['200', '210', '220', '230', '240', '300', '310', '320', '330', '340', '350', '360']
 orangefixe = ['202', '203', '212', '213', '215', '217', '224', '225','234', '235', '243', '244', '245', '306', '316', '319', '327', '337', '347', '359', '368']
-pattern = re.compile(r'CELL:([0-9]{8}|\+225.*)')
 
 def flipp(matchobj):
    # This processes the cellphone numbers
-    number = matchobj.group(1).replace(' ','')
+    number = matchobj.group(3).replace(' ','')
     number = number.replace('+225','') 
     for string in orangemobile:
         if number[:2] == string:
@@ -36,7 +35,7 @@ def flipp(matchobj):
             number = "21" + number
     number = ' '.join(a+b for a,b in zip(number[::2], number[1::2]))
     number = "+225 " + number
-    number = "CELL:"+ number
+    number = matchobj.group(1) + number
     print(number)
     return number
 
@@ -49,7 +48,7 @@ filename = vcf_files[0]
 # The VCF file usually can be exported from all phones
 with open(filename,'r',encoding='utf-8') as f:
     contents = f.read()
-    contents = re.sub(r'CELL:([0-9]{8}|\+225.*)',flipp,contents)
+    contents = re.sub(r'(TEL(\w|=|;|:)*)((\+225|225)?\s?\d\d\s?\d\d\s?\d\d\s?\d\d)',flipp,contents)
 
 os.mkdir('output')
 with open('output/contacts_new.vcf','w',encoding='utf-8') as of:
